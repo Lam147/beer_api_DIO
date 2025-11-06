@@ -13,15 +13,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class BeerService {
+
     private final BeerRepository repo;
     private final BeerMapper mapper = BeerMapper.INSTANCE;
 
     @Autowired
-    public BeerService(BeerRepository repo) { this.repo = repo; }
-
-    private Beer verifyIfExists(Long id) throws BeerNotFoundException {
-        // Usa o id para verificar a existência
-        return repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+    public BeerService(BeerRepository repo) {
+        this.repo = repo;
     }
 
     public BeerDTO createBeer(BeerDTO dto) throws BeerAlreadyRegisteredException {
@@ -32,8 +30,7 @@ public class BeerService {
     }
 
     public BeerDTO findByName(String name) throws BeerNotFoundException {
-        // LINHA 35: Garantindo que BeerNotFoundException(name) (String) seja chamada
-        return mapper.toDTO(repo.findByName(name).orElseThrow(() -> new BeerNotFoundException(name))); 
+        return mapper.toDTO(repo.findByName(name).orElseThrow(() -> new BeerNotFoundException(name)));
     }
 
     public List<BeerDTO> listAll() {
@@ -41,29 +38,26 @@ public class BeerService {
     }
 
     public void deleteById(Long id) throws BeerNotFoundException {
-        verifyIfExists(id); 
+        // Checagem de existência e deleção direta
+        repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         repo.deleteById(id);
     }
 
     public BeerDTO increment(Long id, int qty) throws BeerNotFoundException, BeerStockExceededException {
-        Beer b = verifyIfExists(id);
-        int newQuantity = b.getQuantity() + qty;
-        
-        if (newQuantity > b.getMax()) {
-            throw new BeerStockExceededException(id, newQuantity);
-        }
-        b.setQuantity(newQuantity);
+        Beer b = repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+        int n = b.getQuantity() + qty;
+        // QA Fix: Passa a nova quantidade 'n' para a exceção, que é o valor que viola o estoque.
+        if (n > b.getMax()) throw new BeerStockExceededException(id, n); 
+        b.setQuantity(n);
         return mapper.toDTO(repo.save(b));
     }
 
     public BeerDTO decrement(Long id, int qty) throws BeerNotFoundException, BeerStockExceededException {
-        Beer b = verifyIfExists(id);
-        int newQuantity = b.getQuantity() - qty;
-        
-        if (newQuantity < 0) {
-            throw new BeerStockExceededException(id, newQuantity); 
-        }
-        b.setQuantity(newQuantity);
+        Beer b = repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+        int n = b.getQuantity() - qty;
+        // QA Fix: Passa a nova quantidade 'n' para a exceção, que é o valor que viola (estoque negativo).
+        if (n < 0) throw new BeerStockExceededException(id, n); 
+        b.setQuantity(n);
         return mapper.toDTO(repo.save(b));
     }
 }
