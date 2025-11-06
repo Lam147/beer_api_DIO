@@ -52,5 +52,40 @@ Abaixo, seguem links bem bacanas, sobre tópicos mencionados durante a aula:
 
 [Neste link](https://drive.google.com/file/d/1KPh19mvyKirorOI-UsEYHKkmZpet3Ks6/view?usp=sharing), seguem os slides apresentados como o roteiro utilizado para o desenvolvimento do projeto da nossa sessão.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+---
 
+## ✅ PROJETO CONCLUÍDO E VALIDADO POR CI/CD
+
+Este fork representa a **versão finalizada e totalmente funcional** da API de gerenciamento de cervejas, validada por um pipeline de Integração Contínua (CI) no GitHub Actions.
+
+O objetivo principal foi garantir que o código fosse estável e que **todos os 27 testes unitários e de integração fossem executados com sucesso** em um ambiente de *build* limpo (Ubuntu/Java 11).
+
+### Status do Build Final
+
+| Status | Total de Testes | Falhas (Failures) | Erros (Errors) |
+| :--- | :--- | :--- | :--- |
+| **SUCESSO** | 27 | 0 | 0 |
+
+**Validação de Qualidade (QA):**
+Todas as falhas de compilação cíclicas e problemas de *stubbing* (como `incompatible types` e `reference to any is ambiguous`) foram resolvidas, garantindo a solidez do código.
+
+### Último Commit de Sucesso (Prova de Entrega)
+
+O *build* bem-sucedido foi validado pela seguinte mensagem de commit:
+
+> **`fix: resolve ambiguidade de any() em BeerServiceTest usando Mockito.any()`**
+
+Você pode verificar o log completo e o status do *workflow* na aba **Actions** do repositório.
+
+### 🛠️ Tecnologias e Ferramentas do CI/CD
+
+| Tecnologia | Uso |
+| :--- | :--- |
+| **GitHub Actions** | Orquestração do pipeline de CI. |
+| **Java** | OpenJDK 11 (Ambiente de Compilação). |
+| **Maven** | Gerenciador de dependências e executor dos testes (`mvn clean test`). |
+| **JUnit 5 / Mockito** | Frameworks para testes unitários. |
+
+---
