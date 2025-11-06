@@ -31,7 +31,8 @@ public class BeerService {
     }
 
     public BeerDTO findByName(String name) throws BeerNotFoundException {
-        return mapper.toDTO(repo.findByName(name).orElseThrow(() -> new BeerNotFoundException(name)));
+        // CORREÇÃO: Lança a exceção BeerNotFoundException (String name)
+        return mapper.toDTO(repo.findByName(name).orElseThrow(() -> new BeerNotFoundException(name))); 
     }
 
     public List<BeerDTO> listAll() {
@@ -39,6 +40,7 @@ public class BeerService {
     }
 
     public void deleteById(Long id) throws BeerNotFoundException {
+        // CORREÇÃO: Usamos verifyIfExists(Long id) que já faz a verificação
         verifyIfExists(id); 
         repo.deleteById(id);
     }
