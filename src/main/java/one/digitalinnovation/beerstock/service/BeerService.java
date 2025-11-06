@@ -20,6 +20,7 @@ public class BeerService {
     public BeerService(BeerRepository repo) { this.repo = repo; }
 
     private Beer verifyIfExists(Long id) throws BeerNotFoundException {
+        // Usa o id para verificar a existência
         return repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
     }
 
@@ -31,7 +32,7 @@ public class BeerService {
     }
 
     public BeerDTO findByName(String name) throws BeerNotFoundException {
-        // CORREÇÃO: Lança a exceção BeerNotFoundException (String name)
+        // LINHA 35: Garantindo que BeerNotFoundException(name) (String) seja chamada
         return mapper.toDTO(repo.findByName(name).orElseThrow(() -> new BeerNotFoundException(name))); 
     }
 
@@ -40,7 +41,6 @@ public class BeerService {
     }
 
     public void deleteById(Long id) throws BeerNotFoundException {
-        // CORREÇÃO: Usamos verifyIfExists(Long id) que já faz a verificação
         verifyIfExists(id); 
         repo.deleteById(id);
     }
