@@ -29,7 +29,9 @@ public class BeerService {
         return mapper.toDTO(repo.save(mapper.toModel(dto)));
     }
 
+    // Linha Crítica que o compilador aponta o erro:
     public BeerDTO findByName(String name) throws BeerNotFoundException {
+        // Garantindo que a exceção receba o String 'name' e não um Long
         return mapper.toDTO(repo.findByName(name).orElseThrow(() -> new BeerNotFoundException(name)));
     }
 
@@ -38,7 +40,6 @@ public class BeerService {
     }
 
     public void deleteById(Long id) throws BeerNotFoundException {
-        // Checagem de existência e deleção direta
         repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         repo.deleteById(id);
     }
@@ -46,7 +47,7 @@ public class BeerService {
     public BeerDTO increment(Long id, int qty) throws BeerNotFoundException, BeerStockExceededException {
         Beer b = repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         int n = b.getQuantity() + qty;
-        // QA Fix: Passa a nova quantidade 'n' para a exceção, que é o valor que viola o estoque.
+        // QA Fix: Passa a nova quantidade 'n' (valor que viola o estoque)
         if (n > b.getMax()) throw new BeerStockExceededException(id, n); 
         b.setQuantity(n);
         return mapper.toDTO(repo.save(b));
@@ -55,7 +56,7 @@ public class BeerService {
     public BeerDTO decrement(Long id, int qty) throws BeerNotFoundException, BeerStockExceededException {
         Beer b = repo.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
         int n = b.getQuantity() - qty;
-        // QA Fix: Passa a nova quantidade 'n' para a exceção, que é o valor que viola (estoque negativo).
+        // QA Fix: Passa a nova quantidade 'n' (valor que viola - estoque negativo)
         if (n < 0) throw new BeerStockExceededException(id, n); 
         b.setQuantity(n);
         return mapper.toDTO(repo.save(b));
