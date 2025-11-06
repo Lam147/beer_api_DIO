@@ -55,15 +55,24 @@ public class BeerServiceTest {
 
         // when
         when(beerRepository.findByName(expectedBeerDTO.getName())).thenReturn(Optional.empty());
-        when(beerRepository.save(expectedSavedBeer)).thenReturn(expectedSavedBeer);
+        // CORREÇÃO CRÍTICA: Uso de any(Beer.class) para resolver PotentialStubbingProblem
+        when(beerRepository.save(any(Beer.class))).thenReturn(expectedSavedBeer); 
 
         // then
         BeerDTO createdBeerDTO = beerService.createBeer(expectedBeerDTO);
 
+        // Asserts do seu teste original
         assertThat(createdBeerDTO.getId(), is(equalTo(expectedBeerDTO.getId())));
         assertThat(createdBeerDTO.getName(), is(equalTo(expectedBeerDTO.getName())));
         assertThat(createdBeerDTO.getQuantity(), is(equalTo(expectedBeerDTO.getQuantity())));
     }
+    // ... O resto do código permanece o mesmo ...
+    
+    // ATENÇÃO: Se o erro persistir, o problema pode estar nas importações estáticas do Mockito. 
+    // Garanta que você tenha: `import static org.mockito.Mockito.*;`
+    // E que o any(Beer.class) seja importado do Mockito (se não for, use `Mockito.any(Beer.class)`).
+
+// RESTO DO CÓDIGO DA CLASSE BeerServiceTest.java VAI AQUI ABAIXO, SEM MUDANÇAS:
 
     @Test
     void whenAlreadyRegisteredBeerInformedThenAnExceptionShouldBeThrown() {
