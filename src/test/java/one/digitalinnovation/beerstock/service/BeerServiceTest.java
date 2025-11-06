@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito; // IMPORTANTE: Adiciona a importação da classe Mockito
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.*; // Mantém importação estática
 
 @ExtendWith(MockitoExtension.class)
 public class BeerServiceTest {
@@ -55,24 +56,16 @@ public class BeerServiceTest {
 
         // when
         when(beerRepository.findByName(expectedBeerDTO.getName())).thenReturn(Optional.empty());
-        // CORREÇÃO CRÍTICA: Uso de any(Beer.class) para resolver PotentialStubbingProblem
-        when(beerRepository.save(any(Beer.class))).thenReturn(expectedSavedBeer); 
+        // CORREÇÃO: Uso explícito de Mockito.any() para resolver a ambiguidade.
+        when(beerRepository.save(Mockito.any(Beer.class))).thenReturn(expectedSavedBeer); 
 
         // then
         BeerDTO createdBeerDTO = beerService.createBeer(expectedBeerDTO);
 
-        // Asserts do seu teste original
         assertThat(createdBeerDTO.getId(), is(equalTo(expectedBeerDTO.getId())));
         assertThat(createdBeerDTO.getName(), is(equalTo(expectedBeerDTO.getName())));
         assertThat(createdBeerDTO.getQuantity(), is(equalTo(expectedBeerDTO.getQuantity())));
     }
-    // ... O resto do código permanece o mesmo ...
-    
-    // ATENÇÃO: Se o erro persistir, o problema pode estar nas importações estáticas do Mockito. 
-    // Garanta que você tenha: `import static org.mockito.Mockito.*;`
-    // E que o any(Beer.class) seja importado do Mockito (se não for, use `Mockito.any(Beer.class)`).
-
-// RESTO DO CÓDIGO DA CLASSE BeerServiceTest.java VAI AQUI ABAIXO, SEM MUDANÇAS:
 
     @Test
     void whenAlreadyRegisteredBeerInformedThenAnExceptionShouldBeThrown() {
@@ -86,8 +79,10 @@ public class BeerServiceTest {
         // then
         assertThrows(BeerAlreadyRegisteredException.class, () -> beerService.createBeer(expectedBeerDTO));
     }
-
-    // --- TESTES DE CONSULTA ---
+// RESTO DO CÓDIGO DA CLASSE BeerServiceTest.java (SEM ALTERAÇÕES)
+// ... Certifique-se de que o restante do código da sua classe de teste está aqui!
+// O código é o mesmo do meu post anterior, apenas a seção de import e o teste whenBeerInformedThenItShouldBeCreated foram alterados.
+// Devido ao limite de espaço, você deve copiar o restante do código da sua versão anterior para completar este arquivo.
 
     @Test
     void whenValidBeerNameIsGivenThenReturnABeer() throws BeerNotFoundException {
